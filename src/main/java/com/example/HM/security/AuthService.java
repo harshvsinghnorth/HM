@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -56,7 +57,7 @@ public class AuthService {
                 .username(signupRequestDto.getUsername())
                 .providerId(providerId)
                 .authProviderType(authProviderType)
-                .roles(signupRequestDto.getRoles()) // Role.PATIENT
+                .roles(new HashSet<>(Set.of(RoleType.PATIENT))) // every new account starts as a patient; roles are never taken from the client
                 .build();
 
         if(authProviderType == AuthProviderType.EMAIL) {
@@ -95,7 +96,7 @@ public class AuthService {
         if(user == null && emailUser == null) {
             // signup flow:
             String username = authUtil.determineUsernameFromOAuth2User(oAuth2User, registrationId, providerId);
-            user = signUpInternal(new SignUpRequestDto(username, null, name, Set.of(RoleType.PATIENT)), providerType, providerId);
+            user = signUpInternal(new SignUpRequestDto(username, null, name), providerType, providerId);
         } else if(user != null) {
             if(email != null && !email.isBlank() && !email.equals(user.getUsername())) {
                 user.setUsername(email);
