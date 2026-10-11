@@ -28,7 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 
 
-    //Every filter ka kaam hota hai securitycontext ko fill krna
+    // Validates the Bearer token and populates the SecurityContext for this request
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
