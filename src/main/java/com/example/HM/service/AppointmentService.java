@@ -32,11 +32,10 @@ public class AppointmentService {
 
     @Transactional
     @Secured("ROLE_PATIENT")
-    public AppointmentResponseDto createNewAppointment(CreateAppointmentRequestDto createAppointmentRequestDto){
+    public AppointmentResponseDto createNewAppointment(CreateAppointmentRequestDto createAppointmentRequestDto, Long patientId){
         Long doctorId = createAppointmentRequestDto.getDoctorId();
-        Long PatientId = createAppointmentRequestDto.getPatientId();
 
-        Patient patient = patientRepository.findById(PatientId).orElseThrow(
+        Patient patient = patientRepository.findById(patientId).orElseThrow(
                 ()-> new EntityNotFoundException("Patient does NOT exist")
         );
 
