@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
@@ -22,6 +23,7 @@ import static com.example.HM.entity.type.PermissionType.*;
 import static com.example.HM.entity.type.RoleType.*;
 
 @Configuration
+@EnableMethodSecurity(securedEnabled = true) // activates @PreAuthorize and @Secured on service methods
 @RequiredArgsConstructor
 @Slf4j
 public class WebSecurityConfig {
@@ -38,8 +40,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers("/public/**","/auth/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/admin/**")
-                            .hasAnyAuthority(APPOINTMENT_DELETE.name(),
-                                USER_MANAGE.name())
+                            .hasAnyAuthority(APPOINTMENT_DELETE.getPermission(),
+                                USER_MANAGE.getPermission())
                         .requestMatchers("/admin/**").hasRole(ADMIN.name())
                         .requestMatchers("/doctors/**").hasAnyRole(DOCTOR.name(), ADMIN.name())
                         .anyRequest().authenticated()
